@@ -103,5 +103,7 @@ private:
     //==============================================================================
     juce::AudioBuffer<float> mDelayBuffer;
     int mWritePosition { 0 };
+    float lastInputGain = 0.0f;
+    float lastFeedbackGain = 0.0f;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BasicDelayAudioProcessor)
 };

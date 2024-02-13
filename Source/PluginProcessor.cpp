@@ -167,15 +167,14 @@ void BasicDelayAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 
         fillBuffer(channel, bufferLength, delayBufferLength, bufferData);
         
+        // setUp Dry Data
+        buffer.applyGainRamp(0, buffer.getNumSamples(), lastInputGain, volume->getValue());
+        lastInputGain = volume->getValue();
         readFromBuffer(channel, bufferLength, delayBufferLength, buffer);
         
         fillBuffer(channel, bufferLength, delayBufferLength, bufferData);
 
     }
-
-    //DBG("Delay Bufer Size:" << delayBufferLength);
-    //DBG("Buffer Size:" << bufferLength);
-    //DBG("Write PositionL: " << mWritePosition);
 
     mWritePosition += bufferLength;
     mWritePosition %= delayBufferLength;
@@ -208,7 +207,8 @@ void BasicDelayAudioProcessor::readFromBuffer(int channel,int bufferLength, int 
     if (readPosition < 0)
         readPosition += delayBufferLength;
 
-    auto g = volume->getValue();
+    auto g = lastFeedbackGain;
+    lastFeedbackGain = regen->getValue();
     //
     if (readPosition + bufferLength < delayBufferLength)
     {
